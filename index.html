@@ -5,7 +5,24 @@
     <title>Decomposition</title>
   </head>
   <body>
-    <canvas id="canvas" width="200" height="200"></canvas>
-    <script src="lib/bundle.js" charset="utf-8"></script>
+    <canvas id="canvas"></canvas>
+    <script id="v-shader" type="x-shader/x-vertex">
+      attribute vec4 a_position;
+
+      void main() {
+        gl_Position = a_position;
+      }
+    </script>
+
+    <script id="f-shader" type="x-shader/x-fragment">
+      precision mediump float;
+
+      void main() {
+        gl_Fragcolor = vec4(1, 0, 0.5, 1);
+      }
+    </script>
+
+
+    <script src="lib/webgl.js" charset="utf-8"></script>
   </body>
 </html>
