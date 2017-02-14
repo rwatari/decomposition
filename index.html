@@ -3,14 +3,28 @@
   <head>
     <meta charset="utf-8">
     <title>Decomposition</title>
+    <style media="screen">
+      canvas {
+        height: 300px;
+        width: 400px;
+      }
+    </style>
   </head>
   <body>
     <canvas id="canvas"></canvas>
     <script id="v-shader" type="x-shader/x-vertex">
-      attribute vec4 a_position;
+      // position fed in as pixel coords
+      attribute vec2 a_position;
+
+      uniform vec2 u_resolution;
 
       void main() {
-        gl_Position = a_position;
+        // Converting from pixel coords to clipspace
+        vec2 zeroToOne = a_position / u_resolution;
+        vec2 zeroToTwo = zeroToOne * 2.0;
+        vec2 clipSpace = zeroToTwo - 1.0;
+        // Convert clipSpace vec to vec4 and set (0, 0) to upper left
+        gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
       }
     </script>
 
@@ -18,11 +32,11 @@
       precision mediump float;
 
       void main() {
-        gl_Fragcolor = vec4(1, 0, 0.5, 1);
+        gl_FragColor = vec4(1, 0, 0.5, 1);
       }
     </script>
 
 
-    <script src="lib/webgl.js" charset="utf-8"></script>
+    <script src="lib/bundle.js" charset="utf-8"></script>
   </body>
 </html>
