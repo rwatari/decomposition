@@ -3,20 +3,18 @@
   <head>
     <meta charset="utf-8">
     <title>Decomposition</title>
-    <style media="screen">
-      canvas {
-        height: 300px;
-        width: 400px;
-      }
-    </style>
   </head>
   <body>
     <canvas id="canvas"></canvas>
     <script id="v-shader" type="x-shader/x-vertex">
       // position fed in as pixel coords
       attribute vec2 a_position;
+      attribute vec2 a_texCoord;
 
       uniform vec2 u_resolution;
+
+      //passes v_texCoord from vshader to fshader
+      varying vec2 v_texCoord;
 
       void main() {
         // Converting from pixel coords to clipspace
@@ -25,14 +23,24 @@
         vec2 clipSpace = zeroToTwo - 1.0;
         // Convert clipSpace vec to vec4 and set (0, 0) to upper left
         gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+
+        v_texCoord = a_texCoord;
       }
     </script>
 
-    <script id="f-shader" type="x-shader/x-fragment">
+    <script id="f-shader-gray" type="x-shader/x-fragment">
       precision mediump float;
 
+      // image texture
+      uniform sampler2D u_image;
+
+      // texture coords
+      varying vec2 v_texCoord;
+
       void main() {
-        gl_FragColor = vec4(1, 0, 0.5, 1);
+        vec4 rgbColors = texture2D(u_image, v_texCoord);
+        float grayScale = (rgbColors.r + rgbColors.g + rgbColors.b) / 3.0;
+        gl_FragColor = vec4(vec3(grayScale), 1.);
       }
     </script>
 
