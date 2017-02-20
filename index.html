@@ -18,12 +18,12 @@
 
       void main() {
         // Converting from pixel coords to clipspace
-        vec2 zeroToOne = a_position / u_resolution;
-        vec2 zeroToTwo = zeroToOne * 2.0;
-        vec2 clipSpace = zeroToTwo - 1.0;
+        // vec2 zeroToOne = a_position / u_resolution;
+        // vec2 zeroToTwo = zeroToOne * 2.0;
+        // vec2 clipSpace = zeroToTwo - 1.0;
         // Convert clipSpace vec to vec4 and set (0, 0) to upper left
-        gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
-
+        // gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+        gl_Position = vec4(a_position, 0, 1);
         v_texCoord = a_texCoord;
       }
     </script>
