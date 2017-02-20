@@ -44,6 +44,19 @@
       }
     </script>
 
+    <script id="f-shader-normal" type="x-shader/x-fragment">
+      precision mediump float;
+
+      // image texture
+      uniform sampler2D u_image;
+
+      // texture coords
+      varying vec2 v_texCoord;
+
+      void main() {
+        gl_FragColor = texture2D(u_image, v_texCoord);
+      }
+    </script>
 
     <script src="lib/bundle.js" charset="utf-8"></script>
   </body>
