@@ -54,7 +54,7 @@
       varying vec2 v_texCoord;
 
       void main() {
-        gl_FragColor = texture2D(u_image, v_texCoord);
+        gl_FragColor = vec4(vec3(texture2D(u_image, v_texCoord).g), 1.0);
       }
     </script>
 
@@ -67,13 +67,14 @@
 
       void main() {
         vec2 onePixel = vec2(1.0, 1.0) / u_textureSize;
-        vec4 lapl =
-          texture2D(u_image, v_texCoord + onePixel * vec2( 1.,  0.)) +
-          texture2D(u_image, v_texCoord + onePixel * vec2(-1.,  0.)) +
-          texture2D(u_image, v_texCoord + onePixel * vec2( 0.,  1.)) +
-          texture2D(u_image, v_texCoord + onePixel * vec2( 0., -1.)) -
-          texture2D(u_image, v_texCoord) * 4.0;
-        gl_FragColor = vec4(lapl.rgb, 1.);
+        vec4 pixelAt = texture2D(u_image, v_texCoord);
+        float lapl =
+          texture2D(u_image, v_texCoord + onePixel * vec2( 1.,  0.)).r +
+          texture2D(u_image, v_texCoord + onePixel * vec2(-1.,  0.)).r +
+          texture2D(u_image, v_texCoord + onePixel * vec2( 0.,  1.)).r +
+          texture2D(u_image, v_texCoord + onePixel * vec2( 0., -1.)).r -
+          pixelAt.r * 4.0;
+        gl_FragColor = vec4(pixelAt.r, lapl, pixelAt.b, 1.);
       }
     </script>
 
