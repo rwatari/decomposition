@@ -58,6 +58,25 @@
       }
     </script>
 
+    <script id="f-shader-laplacian" type="x-shader/x-fragment">
+      precision mediump float;
+
+      uniform sampler2D u_image;
+      uniform vec2 u_textureSize;
+      varying vec2 v_texCoord;
+
+      void main() {
+        vec2 onePixel = vec2(1.0, 1.0) / u_textureSize;
+        vec4 lapl =
+          texture2D(u_image, v_texCoord + onePixel * vec2( 1.,  0.)) +
+          texture2D(u_image, v_texCoord + onePixel * vec2(-1.,  0.)) +
+          texture2D(u_image, v_texCoord + onePixel * vec2( 0.,  1.)) +
+          texture2D(u_image, v_texCoord + onePixel * vec2( 0., -1.)) -
+          texture2D(u_image, v_texCoord) * 4.0;
+        gl_FragColor = vec4(lapl.rgb, 1.);
+      }
+    </script>
+
     <script src="lib/bundle.js" charset="utf-8"></script>
   </body>
 </html>
