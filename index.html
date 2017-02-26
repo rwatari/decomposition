@@ -54,7 +54,7 @@
       varying vec2 v_texCoord;
 
       void main() {
-        gl_FragColor = vec4(vec3(texture2D(u_image, v_texCoord).g), 1.0);
+        gl_FragColor = vec4(texture2D(u_image, v_texCoord).rgb, 1.0);
       }
     </script>
 
@@ -66,6 +66,7 @@
       varying vec2 v_texCoord;
 
       void main() {
+        // does this need to be converted to and from concentration [-1, 1]?
         vec2 onePixel = vec2(1.0, 1.0) / u_textureSize;
         vec4 pixelAt = texture2D(u_image, v_texCoord);
         float lapl =
@@ -73,8 +74,31 @@
           texture2D(u_image, v_texCoord + onePixel * vec2(-1.,  0.)).r +
           texture2D(u_image, v_texCoord + onePixel * vec2( 0.,  1.)).r +
           texture2D(u_image, v_texCoord + onePixel * vec2( 0., -1.)).r -
-          pixelAt.r * 4.0;
-        gl_FragColor = vec4(pixelAt.r, lapl, pixelAt.b, 1.);
+          pixelAt.r * 4.0 + 0.5;
+        gl_FragColor = vec4(vec3(lapl), 1.);
+      }
+    </script>
+
+    <script id="f-shader-potential" type="x-shader/x-fragment">
+      precision mediump float;
+
+      uniform sampler2D u_image;
+      uniform vec2 u_textureSize;
+      varying vec2 v_texCoord;
+
+      void main() {
+        vec2 onePixel = vec2(1.0, 1.0) / u_textureSize;
+        float pixelAt = texture2D(u_image, v_texCoord).r;
+        float laplConc =
+          2.0 * (texture2D(u_image, v_texCoord + onePixel * vec2( 1.,  0.)).r +
+          texture2D(u_image, v_texCoord + onePixel * vec2(-1.,  0.)).r +
+          texture2D(u_image, v_texCoord + onePixel * vec2( 0.,  1.)).r +
+          texture2D(u_image, v_texCoord + onePixel * vec2( 0., -1.)).r -
+          pixelAt * 4.0);
+        // 0.5 is gamma
+        float potential = pixelAt * pixelAt * pixelAt - pixelAt - 0.5 * laplConc;
+        // problem: vec3 potential can have values beyond 0,1
+        gl_FragColor = vec4(vec3((potential - 1.) * 0.5), 1.0);
       }
     </script>
 
