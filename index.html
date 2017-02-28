@@ -58,7 +58,7 @@
       }
     </script>
 
-    <script id="f-shader-laplacian" type="x-shader/x-fragment">
+    <script id="f-shader-laplacian2" type="x-shader/x-fragment">
       precision mediump float;
 
       uniform sampler2D u_image;
@@ -79,26 +79,51 @@
       }
     </script>
 
-    <script id="f-shader-potential" type="x-shader/x-fragment">
+    <script id="f-shader-laplacian" type="x-shader/x-fragment">
       precision mediump float;
 
       uniform sampler2D u_image;
       uniform vec2 u_textureSize;
       varying vec2 v_texCoord;
 
+      float extractConc(vec2 pixelSize, float xOffset, float yOffset) {
+        float pixelData = texture2D(u_image, v_texCoord + pixelSize * vec2(xOffset,yOffset)).r;
+        return  pixelData * 2. - 1.;
+      }
+
+      float encodeConc(float conc) {
+        return (conc + 1.) * 0.5;
+      }
+
       void main() {
         vec2 onePixel = vec2(1.0, 1.0) / u_textureSize;
-        float pixelAt = texture2D(u_image, v_texCoord).r;
-        float laplConc =
-          2.0 * (texture2D(u_image, v_texCoord + onePixel * vec2( 1.,  0.)).r +
-          texture2D(u_image, v_texCoord + onePixel * vec2(-1.,  0.)).r +
-          texture2D(u_image, v_texCoord + onePixel * vec2( 0.,  1.)).r +
-          texture2D(u_image, v_texCoord + onePixel * vec2( 0., -1.)).r -
-          pixelAt * 4.0);
-        // 0.5 is gamma
-        float potential = pixelAt * pixelAt * pixelAt - pixelAt - 0.5 * laplConc;
-        // problem: vec3 potential can have values beyond 0,1
-        gl_FragColor = vec4(vec3((potential - 1.) * 0.5), 1.0);
+        float c  = extractConc(onePixel,  0.,  0.);
+        float n  = extractConc(onePixel,  0.,  1.);
+        float e  = extractConc(onePixel,  1.,  0.);
+        float w  = extractConc(onePixel, -1.,  0.);
+        float s  = extractConc(onePixel,  0., -1.);
+        float diags =
+          extractConc(onePixel,  1.,  1.) +
+          extractConc(onePixel, -1.,  1.) +
+          extractConc(onePixel,  1., -1.) +
+          extractConc(onePixel, -1., -1.);
+        float nneewwss =
+          extractConc(onePixel,  0.,  2.) +
+          extractConc(onePixel,  2.,  0.) +
+          extractConc(onePixel, -2.,  0.) +
+          extractConc(onePixel,  0., -2.);
+
+        float news = n + e + w + s;
+        // gamma = 0.5, D = 2.
+        float delta =
+          2. * (
+            pow(n, 3.) + pow(e, 3.) + pow(w, 3.) + pow(s, 3.)
+            - news - 4. * (pow(c, 3.) - c)
+            + 0.5 * ( news + 12. * c - nneewwss - 2. * diags)
+          );
+        // time delta is 50. ms
+        float newConc = c + delta * 50. * 0.001;
+        gl_FragColor = vec4(vec3(encodeConc(newConc)), 1.0);
       }
     </script>
 
