@@ -55,6 +55,7 @@
 
       uniform sampler2D u_image;
       uniform vec2 u_textureSize;
+      uniform float u_deltaT;
       varying vec2 v_texCoord;
 
       float extractConc(vec2 pixelSize, float xOffset, float yOffset) {
@@ -85,15 +86,15 @@
           extractConc(onePixel,  0., -2.);
 
         float news = n + e + w + s;
-        // gamma = 0.5, D = 2.
+        // gamma = 0.5, D = 0.6.
         float delta =
-          2. * (
+          0.6 * (
             pow(n, 3.) + pow(e, 3.) + pow(w, 3.) + pow(s, 3.)
             - news - 4. * (pow(c, 3.) - c)
             + 0.5 * ( news + 12. * c - nneewwss - 2. * diags)
           );
-        // time delta is 5. ms
-        float newConc = c + delta * 5. * 0.001;
+        // time delta is 4. ms
+        float newConc = c + delta * u_deltaT * 0.001;
         gl_FragColor = vec4(vec3(encodeConc(newConc)), 1.0);
       }
     </script>
