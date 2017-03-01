@@ -92,8 +92,8 @@
             - news - 4. * (pow(c, 3.) - c)
             + 0.5 * ( news + 12. * c - nneewwss - 2. * diags)
           );
-        // time delta is 50. ms
-        float newConc = c + delta * 50. * 0.001;
+        // time delta is 5. ms
+        float newConc = c + delta * 5. * 0.001;
         gl_FragColor = vec4(vec3(encodeConc(newConc)), 1.0);
       }
     </script>
