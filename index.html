@@ -3,7 +3,6 @@
   <head>
     <meta charset="utf-8">
     <title>Decomposition</title>
-    <canvas id="canvas"></canvas>
     <script id="v-shader" type="x-shader/x-vertex">
       // position fed in as pixel coords
       attribute vec2 a_position;
@@ -67,11 +66,11 @@
 
       void main() {
         vec2 onePixel = vec2(1.0, 1.0) / u_textureSize;
-        float c  = extractConc(onePixel,  0.,  0.);
-        float n  = extractConc(onePixel,  0.,  1.);
-        float e  = extractConc(onePixel,  1.,  0.);
-        float w  = extractConc(onePixel, -1.,  0.);
-        float s  = extractConc(onePixel,  0., -1.);
+        float c = extractConc(onePixel,  0.,  0.);
+        float n = extractConc(onePixel,  0.,  1.);
+        float e = extractConc(onePixel,  1.,  0.);
+        float w = extractConc(onePixel, -1.,  0.);
+        float s = extractConc(onePixel,  0., -1.);
         float diags =
           extractConc(onePixel,  1.,  1.) +
           extractConc(onePixel, -1.,  1.) +
@@ -101,14 +100,19 @@
     <link rel="stylesheet" href="decomposition.css">
   </head>
   <body>
+    <canvas id="canvas"></canvas>
+    
     <div id="fps-counter">
-      FPS: <div id="fps">0</div>
+      FPS: <span id="fps">0</span>
     </div>
+
     <div id="modal">
-      <h1>Decomposition</h1>
-      <button type="button">Upload</button>
-      <button type="button">Switch</button>
-      <button type="button" id="start">Start</button>
+      <div id="modal-content">
+        <h1>Decomposition</h1>
+        <button type="button">Upload</button>
+        <button type="button">Switch</button>
+        <button type="button" id="start">Start</button>
+      </div>
     </div>
   </body>
 </html>
