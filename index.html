@@ -3,8 +3,6 @@
   <head>
     <meta charset="utf-8">
     <title>Decomposition</title>
-  </head>
-  <body>
     <canvas id="canvas"></canvas>
     <script id="v-shader" type="x-shader/x-vertex">
       // position fed in as pixel coords
@@ -100,5 +98,17 @@
     </script>
 
     <script src="lib/bundle.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="decomposition.css">
+  </head>
+  <body>
+    <div id="fps-counter">
+      FPS: <div id="fps">0</div>
+    </div>
+    <div id="modal">
+      <h1>Decomposition</h1>
+      <button type="button">Upload</button>
+      <button type="button">Switch</button>
+      <button type="button" id="start">Start</button>
+    </div>
   </body>
 </html>
