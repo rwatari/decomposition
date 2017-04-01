@@ -90,8 +90,8 @@
             - news - 4. * (pow(c, 3.) - c)
             + 0.5 * ( news + 12. * c - nneewwss - 2. * diags)
           );
-        // time delta is 4. ms
-        float newConc = c + delta * u_deltaT * 0.001;
+        // time delta is 17 ms
+        float newConc = c + delta * u_deltaT * 0.0007;
         gl_FragColor = vec4(vec3(encodeConc(newConc)), 1.0);
       }
     </script>
@@ -101,7 +101,7 @@
   </head>
   <body>
     <canvas id="canvas"></canvas>
-    
+
     <div id="fps-counter">
       FPS: <span id="fps">0</span>
     </div>
@@ -110,7 +110,7 @@
       <div id="modal-content">
         <h1>Decomposition</h1>
         <button type="button">Upload</button>
-        <button type="button">Switch</button>
+        <button type="button" id="switch">Switch to JavaScript</button>
         <button type="button" id="start">Start</button>
       </div>
     </div>
